@@ -12,7 +12,7 @@ export default function App() {
   ])
   return (
     <div className="App">
-      <h1>My Tasks ✅</h1>
+      <h1>勉強中のプログラミング言語・フレームワーク ✅</h1>
       <DndContext collisionDetection={closestCorners}>
         <Column tasks={tasks}></Column>
       </DndContext>
