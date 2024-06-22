@@ -2,13 +2,13 @@ import { useState } from 'react';
 import './App.css';
 
 import {DndContext, closestCorners} from "@dnd-kit/core"; 
-import Column from './components/Column';
+import Column from './components/Column/Column';
 
 export default function App() {
   const [tasks, setTasks] = useState([
-    { id: 1, title: "Add tests to homepage" },
-    { id: 2, title: "Fix styling in about section" },
-    { id: 3, title: "Learn how to center a div" },
+    { id: 1, title: "Next.js" },
+    { id: 2, title: "TypeScript" },
+    { id: 3, title: "Tailwind CSS" },
   ])
   return (
     <div className="App">
