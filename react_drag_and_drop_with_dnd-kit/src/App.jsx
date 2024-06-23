@@ -4,6 +4,7 @@ import './App.css';
 import {DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useSensor, useSensors} from "@dnd-kit/core"; 
 import Column from './components/Column/Column';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import Input from './components/Input/Input';
 
 export default function App() {
   const [tasks, setTasks] = useState([
@@ -11,6 +12,10 @@ export default function App() {
     { id: 2, title: "TypeScript" },
     { id: 3, title: "Tailwind CSS" },
   ]); // 3つのタスクを初期状態として設定
+
+  const addTask = (title) => {
+    setTasks((tasks) => [...tasks, {id: tasks.length + 1, title}]);
+  }
 
   const getTaskPos = id => tasks.findIndex(task => task.id === id); 
   // 指定されたタスクのIDから、そのタスクが現在リストのどこにあるのかを見つけるための関数。
@@ -63,6 +68,7 @@ export default function App() {
     <div className="App">
       <h1 className='title'>勉強中のプログラミング言語・フレームワーク ✅</h1>
       <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+        <Input onSubmit={addTask}/>
         <Column tasks={tasks}></Column>
       </DndContext>
     </div>
