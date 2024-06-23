@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import './App.css';
 
-import {DndContext, closestCorners} from "@dnd-kit/core"; 
+import {DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useSensor, useSensors} from "@dnd-kit/core"; 
 import Column from './components/Column/Column';
-import { arrayMove } from '@dnd-kit/sortable';
+import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
 export default function App() {
   const [tasks, setTasks] = useState([
@@ -40,19 +40,36 @@ export default function App() {
   // getTasksPos(over.id)はドロップされた場所のタスクの位置を見つける
   // arrayMove(tasks, originalPos, newPos)は、tasks配列ないのタスクをoriginalPosからnewPosに移動させた新しい配列を返す
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+  // useSensors: 複数のセンサーをまとめて設定するためのフック
+  // useSensor: センサーを設定するためのフック
+  // PointerSensor: マウスやペン入力デバイスでのドラッグ操作を処理する
+  // TouchSensor: タッチデバイス(スマートフォンやタブレット)でのドラッグ操作を処理する
+  // KeyboardSensor: キーボードでのドラッグ操作を処理する(アクセシビリティを向上させるために、キーボード操作でドラッグ&ドロップを行えるようにする)
+  // sortableKeyboardCoordinates: キーボード操作でドラッグ&ドロップを行う際に、要素の位置を計算するための関数
+  //   keyboardSensorのcoordinateGetterプロパティに渡され、キーボード操作時の座標を計算する
+  // PointerSensorとTouchSensorをデフォルトで使用。
+  // KeyboardSensorに対して、coordinateGetterとしてsortableKeyboardCoordinatesを設定。これにより、キーボード操作時の　　座標計算が正確に行われるようにする
+
 
 
   return (
     <div className="App">
       <h1 className='title'>勉強中のプログラミング言語・フレームワーク ✅</h1>
-      <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
         <Column tasks={tasks}></Column>
       </DndContext>
     </div>
   );
 }
 
-// collisionDetection={closestCorners}は、ドラッグされた要素とドロップされた要素の衝突検出方法を指定している
+// collisionDetection={closestCorners}は、ドラッグされた要素がどの要素と最も近いのかを判定
 // onDragEnd={handleDragEnd}はドラッグ&ドロップ操作が完了した時に呼び出される関数を指定している
 // DndContextを使ってドラッグ&ドロップのコンテキストを提供し、Columnコンポーネントにタスクリストを渡して表示する。
 // <Column tasks={tasks}></Column>は、タスクリストを表示するカスタムコンポーネント
