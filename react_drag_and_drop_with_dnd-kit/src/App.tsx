@@ -1,39 +1,44 @@
 import { useState } from 'react';
-import './App.css';
 
-import {DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useSensor, useSensors} from "@dnd-kit/core"; 
-import Column from './components/Column/Column';
+import './App.css';
+import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { Column } from './components/Column/Column';
 import Input from './components/Input/Input';
 
+interface Task {
+  id: number;
+  title: string;
+}
+
 export default function App() {
-  const [tasks, setTasks] = useState([
-    { id: 1, title: "Next.js" },
-    { id: 2, title: "TypeScript" },
-    { id: 3, title: "Tailwind CSS" },
+  const [tasks, setTasks] = useState<Task[]>([
+    { id: 1, title: "あああ" },
+    { id: 2, title: "いいい" },
+    { id: 3, title: "ううう" },
   ]); // 3つのタスクを初期状態として設定
 
-  const addTask = (title) => {
-    setTasks((tasks) => [...tasks, {id: tasks.length + 1, title}]);
+  const addTask = (title: string): void => {
+    setTasks((tasks) => [...tasks, { id: tasks.length + 1, title }]);
   }
 
-  const getTaskPos = id => tasks.findIndex(task => task.id === id); 
+  const getTaskPos = (id: number): number => tasks.findIndex(task => task.id === id);
   // 指定されたタスクのIDから、そのタスクが現在リストのどこにあるのかを見つけるための関数。
   // findIndexは、タスクリストの中でidと一致するタスクのインデックスを返す
   // 例:
-  // getTaskPos(1) -> 0を返す (Next.jsの位置)
-  // getTaskPos(2) -> 1を返す (TypeScriptの位置)
+  // getTaskPos(1) -> 0を返す
+  // getTaskPos(2) -> 1を返す
 
-  const handleDragEnd = event => { // handleDragEnd: ドラッグ&ドロップが完了した時に呼び出される
-    const {active, over} = event;
+  const handleDragEnd = (event: any): void => { // handleDragEnd: ドラッグ&ドロップが完了した時に呼び出される
+    const { active, over } = event;
 
-    if(active.id === over.id) return;
+    if (active.id === over.id) return;
 
     setTasks(tasks => {
-        const originalPos = getTaskPos(active.id);
-        const newPos = getTaskPos(over.id);
+      const originalPos = getTaskPos(active.id);
+      const newPos = getTaskPos(over.id);
 
-        return arrayMove(tasks, originalPos, newPos);
+      return arrayMove(tasks, originalPos, newPos);
     })
   }
   // event: ドラッグ&ドロップのイベントプロジェクト
@@ -58,7 +63,7 @@ export default function App() {
   // TouchSensor: タッチデバイス(スマートフォンやタブレット)でのドラッグ操作を処理する
   // KeyboardSensor: キーボードでのドラッグ操作を処理する(アクセシビリティを向上させるために、キーボード操作でドラッグ&ドロップを行えるようにする)
   // sortableKeyboardCoordinates: キーボード操作でドラッグ&ドロップを行う際に、要素の位置を計算するための関数
-  //   keyboardSensorのcoordinateGetterプロパティに渡され、キーボード操作時の座標を計算する
+  // keyboardSensorのcoordinateGetterプロパティに渡され、キーボード操作時の座標を計算する
   // PointerSensorとTouchSensorをデフォルトで使用。
   // KeyboardSensorに対して、coordinateGetterとしてsortableKeyboardCoordinatesを設定。これにより、キーボード操作時の　　座標計算が正確に行われるようにする
 
@@ -66,9 +71,8 @@ export default function App() {
 
   return (
     <div className="App">
-      <h1 className='title'>勉強中のプログラミング言語・フレームワーク ✅</h1>
       <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-        <Input onSubmit={addTask}/>
+        <Input onSubmit={addTask} />
         <Column tasks={tasks}></Column>
       </DndContext>
     </div>
