@@ -1,10 +1,15 @@
-import Task from "../Task/Task";
+import { Task}  from "../Task/Task";
 import "./Column.css";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
-import {SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
+interface TasksProps {
+  tasks: {
+    id: number;
+    title: string;
+  }[];
+}
 
-
-const Column = ({ tasks }) => {
+export const Column: React.FC<TasksProps> = ({ tasks }) => {
   return (
     <div className='column'>
       <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
@@ -15,5 +20,3 @@ const Column = ({ tasks }) => {
     </div>
   )
 }
-
-export default Column
